@@ -15,6 +15,9 @@ export async function apiRequest<T>(path: string, body?: unknown): Promise<T> {
       ...(body === undefined ? {} : { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }), signal: controller.signal,
     });
     const data = await response.json().catch(() => null);
+    if (response.status === 401 && path.startsWith('/admin/') && path !== '/admin/session' && typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('bilhetou-admin-session-expired'));
+    }
     if (!response.ok || !data) {
       if (!data) throw new ApiError('A API não retornou JSON. Confira o encaminhamento /api na Vercel e se o serviço está ativo no Render.', response.status);
       const message = data?.message;

@@ -6,10 +6,16 @@ export default function AdminSession({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [secret, setSecret] = useState('');
   const [error, setError] = useState('');
-  useEffect(() => { apiRequest('/admin/session').then(() => setAuthenticated(true)).catch(() => {}).finally(() => setLoading(false)); }, []);
+  useEffect(() => {
+    let active = true;
+    const expired = () => { setAuthenticated(false); setError('Sua sessão administrativa expirou. Entre novamente.'); };
+    window.addEventListener('bilhetou-admin-session-expired', expired);
+    apiRequest('/admin/session').then(() => { if (active) setAuthenticated(true); }).catch(() => {}).finally(() => { if (active) setLoading(false); });
+    return () => { active = false; window.removeEventListener('bilhetou-admin-session-expired', expired); };
+  }, []);
   async function login(event: FormEvent) {
     event.preventDefault(); setLoading(true); setError('');
-    try { await apiRequest('/admin/session', { secret }); setSecret(''); setAuthenticated(true); }
+    try { await apiRequest('/admin/session', { secret }); await apiRequest('/admin/session'); setSecret(''); setAuthenticated(true); }
     catch (error) { setError(error instanceof Error ? error.message : 'Não foi possível entrar.'); }
     finally { setLoading(false); }
   }
