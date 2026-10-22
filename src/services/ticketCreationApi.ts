@@ -3,7 +3,7 @@ import type { TicketCreationService } from './ticketCreation';
 
 import { apiRequest } from './api';
 
-export interface ApiCampaign { id: string; name: string; status: string; ticketPriceCents: number; prizeCents?: number; drawAt?: string | null; _count: { tickets: number } }
+export interface ApiCampaign { id: string; name: string; status: string; ticketPriceCents: number; prizeCents?: number | null; closesAt?: string | null; _count: { tickets: number } }
 interface ApiTicket { id: string; serial: string; numbers: string[] }
 export interface ApiStockPage { items: { id: string; serial: string; status: string; campaign: string; participant: string | null; createdAt: string; numbers: { position: number; value: string }[] }[]; total: number; page: number; totalPages: number }
 

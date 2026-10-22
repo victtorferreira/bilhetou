@@ -140,14 +140,14 @@ input[type='checkbox'] { accent-color: #087b56; width: 18px; height: 18px; }
 .payment-total { padding: 24px 0; border-top: 1px solid var(--flow-border); border-bottom: 1px solid var(--flow-border); margin: 22px 0; }
 .payment-total span, .payment-total small { display: block; font-size: 12px; color: var(--flow-muted); }
 .payment-total strong { display: block; color: var(--flow-green); font: 800 45px 'Outfit', sans-serif; margin: 6px 0; }
-.simulation-notice { display: flex; gap: 10px; align-items: start; background: var(--flow-soft); color: var(--flow-green); padding: 14px; border-radius: 12px; margin-bottom: 22px; text-align: left; }
-.simulation-notice p { margin: 0; font-size: 11px; line-height: 1.7; color: var(--flow-muted); }
+.order-notice { display: flex; gap: 10px; align-items: start; background: var(--flow-soft); color: var(--flow-green); padding: 14px; border-radius: 12px; margin-bottom: 22px; text-align: left; }
+.order-notice p { margin: 0; font-size: 11px; line-height: 1.7; color: var(--flow-muted); }
 .confirmation-page>.flow-heading { text-align: center; }
 .success-symbol { display: grid; place-items: center; width: 92px; height: 92px; background: #087b56; color: #fff; border: 10px solid var(--flow-soft); border-radius: 50%; margin: 0 auto 24px; box-shadow: 0 0 0 1px var(--flow-border); }
 .confirmation-details { display: grid; grid-template-columns: minmax(0, 2fr) 1fr 1fr; gap: 24px; padding: 25px; }
 .confirmation-details small { display: block; font-size: 9px; font-weight: 800; color: var(--flow-muted); letter-spacing: .07em; margin-bottom: 10px; }
 .confirmation-details strong { font-size: 12px; overflow-wrap: anywhere; }
-.simulation-disclaimer { text-align: center; color: var(--flow-muted); font-size: 12px; line-height: 1.7; margin: 22px 0; }
+.order-payment-note { text-align: center; color: var(--flow-muted); font-size: 12px; line-height: 1.7; margin: 22px 0; }
 .confirmation-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin: 22px 0 35px; }
 .ticket-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .heading-with-action { display: flex; align-items: center; justify-content: space-between; gap: 18px; }

@@ -12,7 +12,7 @@ test('Vercel proxies API requests before applying the SPA fallback', () => {
 test('non-JSON hosting errors explain the API routing problem', async () => {
   const previous = globalThis.fetch;
   globalThis.fetch = async () => new Response('<html>Not found</html>', { status: 404 });
-  try { await assert.rejects(apiRequest('/demo/session'), /encaminhamento \/api na Vercel/); }
+  try { await assert.rejects(apiRequest('/participant/session'), /encaminhamento \/api na Vercel/); }
   finally { globalThis.fetch = previous; }
 });
 

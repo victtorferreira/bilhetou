@@ -1,12 +1,12 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { BrowserRouter, Link, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
 import PublicLayout from './components/PublicLayout';
 import { RequireParticipant, RequireSelection } from './components/RouteGuards';
 import Register from './pages/Register';
 import TicketSelection from './pages/TicketSelection';
 import OrderSummary from './pages/OrderSummary';
-import DemoPayment from './pages/DemoPayment';
+import ConfirmOrder from './pages/ConfirmOrder';
 import Confirmation from './pages/Confirmation';
 import MyTickets from './pages/MyTickets';
 import Results from './pages/Results';
@@ -15,14 +15,14 @@ const AdminLayout = lazy(() => import('./components/AdminLayout'));
 const Admin = lazy(() => import('./pages/Admin'));
 const titles: Record<string, string> = {
   '/': 'Cadastro', '/bilhetes': 'Escolher bilhetes', '/resumo': 'Resumo do pedido',
-  '/pagamento': 'Simulação', '/confirmacao': 'Simulação concluída',
-  '/meus-bilhetes': 'Meus bilhetes', '/resultados': 'Resultados demonstrativos',
+  '/confirmar-pedido': 'Pedido', '/confirmacao': 'Pedido registrado',
+  '/meus-bilhetes': 'Meus bilhetes', '/resultados': 'Resultados',
 };
 
 function RouteEffects() {
   const { pathname } = useLocation();
   useEffect(() => {
-    document.title = `${pathname.startsWith('/admin') ? 'Administração demonstrativa' : titles[pathname] ?? 'Página não encontrada'} | Bilhetou`;
+    document.title = `${pathname.startsWith('/admin') ? 'Administração' : titles[pathname] ?? 'Página não encontrada'} | Bilhetou`;
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [pathname]);
   return null;
@@ -36,13 +36,13 @@ export default function App() {
         <Route path="bilhetes" element={<TicketSelection/>}/>
         <Route element={<RequireSelection/>}>
           <Route path="resumo" element={<OrderSummary/>}/>
-          <Route path="pagamento" element={<DemoPayment/>}/>
+          <Route path="confirmar-pedido" element={<ConfirmOrder/>}/><Route path="pagamento" element={<Navigate to="/confirmar-pedido" replace/>}/>
         </Route>
         <Route path="confirmacao" element={<Confirmation/>}/>
         <Route path="meus-bilhetes" element={<MyTickets/>}/>
         <Route path="resultados" element={<Results/>}/>
       </Route>
-      <Route path="*" element={<section className="empty"><h1>Página não encontrada</h1><p>Continue pelo cadastro demonstrativo.</p><Link className="btn primary" to="/">Voltar ao início</Link></section>}/>
+      <Route path="*" element={<section className="empty"><h1>Página não encontrada</h1><p>Continue pelo cadastro.</p><Link className="btn primary" to="/">Voltar ao início</Link></section>}/>
     </Route>
     <Route path="admin" element={<AdminLayout/>}>
       {['', 'campanhas', 'bilhetes', 'importacao', 'vendedores', 'participantes', 'relatorios', 'apuracoes', 'conferencia'].map(path => path ? <Route key={path} path={path} element={<Admin key={path}/>}/> : <Route key="index" index element={<Admin/>}/>)}

@@ -2,7 +2,7 @@ export interface Participant {
   id: string;
   name: string;
   phone: string;
-  verification: 'demo-unverified';
+  verification: 'unverified';
 }
 
 export interface TicketEntry {
@@ -13,10 +13,10 @@ export interface TicketEntry {
   numbers: string[];
   date: string;
   campaignId: string;
-  status: 'Disponível' | 'Demonstrativo' | 'Conferido';
+  status: 'Disponível' | 'Atribuído' | 'Conferido';
 }
 
-export interface DemoOrder {
+export interface Order {
   tickets: TicketEntry[];
   id: string;
   participantId: string;
@@ -25,32 +25,33 @@ export interface DemoOrder {
   totalCents: number;
   createdAt: string;
   idempotencyKey: string;
-  status: 'demo-confirmed';
+  status: 'registered';
+  paymentStatus: 'UNPAID';
 }
 
 export interface CampaignInfo {
   id: string;
   name: string;
-  prizeCents: number;
+  prizeCents: number | null;
   ticketPriceCents: number;
   drawDate: string;
   status: string;
 }
 
-export interface DemoSession {
+export interface ParticipantSessionState {
   participant: Participant | null;
   campaign: CampaignInfo | null;
   selectedIds: string[];
   selectedTickets: TicketEntry[];
   selectionKey: string;
   availableCount: number;
-  orders: DemoOrder[];
+  orders: Order[];
   initialized: boolean;
   loading: boolean;
   error: string;
 }
 
-export interface ConfirmDemoOrderInput {
+export interface ConfirmOrderInput {
   participantId: string;
   ticketIds: string[];
   idempotencyKey: string;
@@ -61,8 +62,8 @@ export interface ParticipantService {
   register(name: string, phone: string): Promise<Participant>;
 }
 
-export interface DemoOrderService {
-  confirm(input: ConfirmDemoOrderInput): Promise<DemoOrder>;
+export interface OrderService {
+  confirm(input: ConfirmOrderInput): Promise<Order>;
 }
 
 export type SelectionMode = 'quantity' | 'manual';
