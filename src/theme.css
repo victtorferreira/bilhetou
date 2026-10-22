@@ -1,0 +1,146 @@
+:root {
+  color-scheme: light;
+}
+
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  background: #e8f6ef;
+  color: #087b56;
+}
+
+button:focus-visible {
+  outline: 3px solid #b88a22;
+  outline-offset: 3px;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  color: #e5eee9;
+  background: #101b17;
+  --surface: #182720;
+  --surface-soft: #20382c;
+  --border: #344d3f;
+  --muted: #b2c3b8;
+  --accent: #73d6a7;
+}
+
+[data-theme='dark'] :is(.header, .nav, .quick-stats, .step, .ticket-card,
+  .head-tag, .pill, .campaign-feature, .purchase-panel, .lookup-panel,
+  .metric, .empty, .search, .history-item, .admin-sidebar, .admin-main,
+  .profile-card, .mobile-nav, .auth-modal, .floating-ticket, .btn.outline) {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+[data-theme='dark'] .prize-card {
+  background: linear-gradient(148deg, #20382c, #182720);
+  color: #e5eee9;
+}
+
+[data-theme='dark'] .wave,
+[data-theme='dark'] .ticket-perf::before,
+[data-theme='dark'] .ticket-perf::after {
+  background: #101b17;
+}
+
+[data-theme='dark'] :is(.section.light, .circle-decoration) {
+  background: #13221b;
+}
+
+[data-theme='dark'] :is(.stat-icon, .metric-icon, .step-icon, .ticket-seal,
+  .ticket-numbers div, .ticket-bottom button, .pill.green, .empty-icon,
+  .lookup-icon, .auth-mark, .auth-toggle, .admin-help, .stepper button,
+  .account-pill, .admin-metrics>div, .admin-table th) {
+  background: var(--surface-soft);
+  border-color: var(--border);
+}
+
+[data-theme='dark'] :is(.brand, .brand b, .nav button.active, .nav button:hover,
+  .icon-btn, .menu-button, .modal-close, .btn.outline, .account-pill,
+  .eyebrow, .section h2 em, .feature-list svg, .stat-icon, .metric-icon,
+  .step-icon, .ticket-brand, .ticket-seal, .ticket-numbers div,
+  .ticket-bottom button, .pill.green, .prize-amount, .prize-details>div,
+  .campaign-row svg, .stepper button, .total strong, .empty-icon,
+  .lookup-icon, .admin-help, .upload-box, .auth-mark,
+  .auth-toggle button.selected, .mobile-nav button.active) {
+  color: var(--accent);
+}
+
+[data-theme='dark'] :is(.nav button, .brand small, .prize-label,
+  .prize-subtitle, .prize-details span, .floating-ticket span,
+  .quick-stats small, .section-intro p, .showcase p, .step p,
+  .ticket-note, .ticket-bottom small, .page-head p, .head-tag, .pill,
+  .campaign-description p, .purchase-panel>p, .lookup-panel>p,
+  .panel-header>span:last-child, .unit-price, .quantity-row, .total,
+  .secure-note, .metric span:not(.metric-icon), .empty p,
+  .history-item small, .admin-sidebar button, .admin-metrics span,
+  .admin-metrics small, .admin-help p, .upload-box p, .admin-table th,
+  .table-caption, .profile-card p, .auth-modal>p, .auth-toggle button,
+  .auth-modal form label, .privacy, .mobile-nav button, .search, .field) {
+  color: var(--muted);
+}
+
+[data-theme='dark'] :is(.feature-list div, .campaign-row, .unit-price strong,
+  .stepper b, .search input, .field input, .upload-box h3,
+  .floating-ticket, .prize-details b) {
+  color: #e5eee9;
+}
+
+[data-theme='dark'] :is(.quick-stats>div, .ticket-perf,
+  .prize-divider,
+  .unit-price, .quantity-row, .field, .upload-box,
+  .admin-table td, .admin-table th) {
+  border-color: var(--border);
+}
+
+[data-theme='dark'] .ticket-perf::before,
+[data-theme='dark'] .ticket-perf::after {
+  border-color: var(--border);
+}
+
+[data-theme='dark'] :is(.theme-toggle:hover, .auth-toggle button.selected,
+  .admin-sidebar button.selected, .admin-sidebar button:hover) {
+  background: #2a4838;
+  color: var(--accent);
+}
+
+[data-theme='dark'] :is(.prize-icon, .history-symbol, .pill.amber,
+  .results-warning) {
+  background: #3a301b;
+  border-color: #66532d;
+  color: #f1cf80;
+}
+
+[data-theme='dark'] .form-error {
+  background: #422822;
+  color: #ffb4a9;
+}
+
+[data-theme='dark'] input::placeholder {
+  color: #9aafa1;
+  opacity: 1;
+}
+
+[data-theme='dark'] .step-icon span {
+  border-color: var(--surface);
+}
+
+[data-theme='dark'] .footer .brand { color: #fff; }
+[data-theme='dark'] .footer .brand b { color: #e9c26b; }
+[data-theme='dark'] .bottom-cta .eyebrow { color: #f1cd75; }
+[data-theme='dark'] .light-text { color: #f8de9c; }
+
+@media (max-width: 400px) {
+  .header-inner { gap: 8px; }
+  .header-actions { gap: 5px; }
+  .theme-toggle { width: 36px; height: 36px; }
+  .login-btn { padding: 0 8px; gap: 0; font-size: 0; }
+  .login-btn svg { display: none; }
+  .login-btn::after { content: 'Entrar'; font-size: 11px; }
+}
