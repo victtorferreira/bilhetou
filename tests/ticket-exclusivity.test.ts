@@ -1,6 +1,20 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { apiRequest } from '../src/services/api';
 import { createApiTicketService, importApiTickets, listApiStock, getTicketStatistics } from '../src/services/ticketCreationApi';
+
+test('Vercel proxies API requests before applying the SPA fallback', () => {
+  const config = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+  assert.deepEqual(config.rewrites[0], { source: '/api/:path*', destination: 'https://bilhetou-backend.onrender.com/api/:path*' });
+  assert.deepEqual(config.rewrites[1], { source: '/(.*)', destination: '/index.html' });
+});
+test('non-JSON hosting errors explain the API routing problem', async () => {
+  const previous = globalThis.fetch;
+  globalThis.fetch = async () => new Response('<html>Not found</html>', { status: 404 });
+  try { await assert.rejects(apiRequest('/demo/session'), /encaminhamento \/api na Vercel/); }
+  finally { globalThis.fetch = previous; }
+});
 
 test('creation uses authenticated admin endpoints, carries leading zeros and requires matching campaign', async () => {
   const previous = globalThis.fetch;
