@@ -11,6 +11,8 @@ A API local deve estar disponível em http://127.0.0.1:3000. O Vite encaminha /a
 
 O painel /admin exige credencial validada pelo backend. Cadastre campanhas em /admin/campanhas e crie ou importe os bilhetes antes de abrir o fluxo público.
 
+Em `/admin/participantes`, consulte cadastros com busca, filtros e paginação. O telefone fica mascarado na lista; o contato completo e os históricos de pedidos e bilhetes aparecem ao abrir os detalhes. Acesso e isolamento por organização são verificados pela API. Publique frontend e backend atualizados para disponibilizar a aba; não há nova migração para ela.
+
 ```bash
 npm run build
 npm test
