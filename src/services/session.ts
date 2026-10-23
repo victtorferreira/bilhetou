@@ -36,8 +36,8 @@ export const participantServices = {
     }).finally(() => { pending = null; });
     return pending;
   },
-  participants: { async register(name: string, phone: string) {
-    const next = await mutation('/participant/session', { name, phone });
+  participants: { async register(name: string, phone: string, whatsappConsent = false) {
+    const next = await mutation('/participant/session', { name, phone, whatsappConsent });
     return next.participant!;
   } },
   select(ticketIds: string[]) { return mutation('/participant/selection', { ticketIds }); },

@@ -300,3 +300,6 @@ input[type='checkbox'] { accent-color: #087b56; width: 18px; height: 18px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+.register-card form>label.whatsapp-consent { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; line-height: 1.6; font-weight: 400; cursor: pointer; }
+.whatsapp-consent input { width: 18px; height: 18px; margin: 1px 0 0; flex-shrink: 0; accent-color: var(--flow-green); }

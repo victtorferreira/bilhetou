@@ -59,7 +59,7 @@ export interface ConfirmOrderInput {
 
 // A real implementation must resolve identity through an OTP-verified server session.
 export interface ParticipantService {
-  register(name: string, phone: string): Promise<Participant>;
+  register(name: string, phone: string, whatsappConsent?: boolean): Promise<Participant>;
 }
 
 export interface OrderService {

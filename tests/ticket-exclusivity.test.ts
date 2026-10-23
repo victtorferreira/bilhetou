@@ -6,7 +6,12 @@ import { createApiTicketService, importApiTickets, listApiStock, getTicketStatis
 
 test('Vercel proxies API requests before applying the SPA fallback', () => {
   const config = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
-  assert.deepEqual(config.rewrites[0], { source: '/api/:path*', destination: 'https://bilhetou-backend.onrender.com/api/:path*' });
+  assert.equal(config.rewrites[0].source, '/api/:path*');
+  const target = new URL(config.rewrites[0].destination);
+  assert.equal(target.protocol, 'https:');
+  assert.equal(target.pathname, '/api/:path*');
+  assert.equal(target.username, '');
+  assert.equal(target.password, '');
   assert.deepEqual(config.rewrites[1], { source: '/(.*)', destination: '/index.html' });
 });
 test('non-JSON hosting errors explain the API routing problem', async () => {

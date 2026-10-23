@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://bilhetou-backend.onrender.com/api/:path*"
+      "destination": "https://bilhetou-backend-production.up.railway.app/api/:path*"
     },
     {
       "source": "/(.*)",
