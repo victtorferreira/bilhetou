@@ -1,0 +1,10 @@
+.sandbox-intro { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+.sandbox-intro > svg { flex-shrink: 0; }
+.sandbox-intro h2 { margin-top: 0; }
+.sandbox-charge { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; margin-top: 24px; }
+.sandbox-qr { background: #fff; padding: 15px; border-radius: 12px; align-self: start; }
+.sandbox-qr svg { display: block; width: 100%; height: auto; }
+.sandbox-charge-id { overflow-wrap: anywhere; }
+.sandbox-details textarea { display: block; width: 100%; max-width: 100%; padding: 12px; border: 1px solid var(--border, #aaa); border-radius: 8px; margin: 8px 0 16px; font: inherit; color: inherit; background: transparent; resize: vertical; }
+.sandbox-details .pill { display: inline-flex; align-items: center; gap: 6px; }
+@media (max-width: 760px) { .sandbox-charge { grid-template-columns: 1fr; } .sandbox-qr { width: 250px; max-width: 100%; } }

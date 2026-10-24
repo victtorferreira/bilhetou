@@ -13,6 +13,8 @@ import Results from './pages/Results';
 
 const AdminLayout = lazy(() => import('./components/AdminLayout'));
 const Admin = lazy(() => import('./pages/Admin'));
+const AbacatepaySandbox = lazy(() => import('./pages/AbacatepaySandbox'));
+const PixPayments = lazy(() => import('./pages/PixPayments'));
 const titles: Record<string, string> = {
   '/': 'Cadastro', '/bilhetes': 'Escolher bilhetes', '/resumo': 'Resumo do pedido',
   '/confirmar-pedido': 'Pedido', '/confirmacao': 'Pedido registrado',
@@ -45,6 +47,8 @@ export default function App() {
       <Route path="*" element={<section className="empty"><h1>Página não encontrada</h1><p>Continue pelo cadastro.</p><Link className="btn primary" to="/">Voltar ao início</Link></section>}/>
     </Route>
     <Route path="admin" element={<AdminLayout/>}>
+      <Route path="pagamentos-teste" element={<AbacatepaySandbox/>}/>
+      <Route path="pagamentos" element={<PixPayments/>}/>
       {['', 'campanhas', 'bilhetes', 'importacao', 'vendedores', 'participantes', 'relatorios', 'apuracoes', 'conferencia'].map(path => path ? <Route key={path} path={path} element={<Admin key={path}/>}/> : <Route key="index" index element={<Admin/>}/>)}
       <Route path="*" element={<div className="empty"><h1>Seção não encontrada</h1><Link className="btn outline" to="/admin">Visão geral</Link></div>}/>
     </Route>
