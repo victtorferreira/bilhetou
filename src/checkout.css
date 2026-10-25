@@ -157,7 +157,10 @@ input[type='checkbox'] { accent-color: #087b56; width: 18px; height: 18px; }
 .lookup-feedback { font-size: 13px; color: var(--flow-green); line-height: 1.7; margin: 20px 0 0; }
 .admin-workspace { padding-top: 30px; padding-bottom: 50px; }
 .admin-header-label { display: flex; align-items: center; gap: 10px; color: var(--flow-muted); font-size: 12px; }
-.admin-access-notice { display: flex; gap: 16px; padding: 20px; border: 1px solid var(--flow-border); border-radius: 14px; background: var(--flow-soft); color: var(--flow-green); margin-bottom: 25px; }
+.admin-access-notice { display: flex; align-items: center; gap: 16px; padding: 20px; border: 1px solid var(--flow-border); border-radius: 14px; background: var(--flow-soft); color: var(--flow-green); margin-bottom: 25px; }
+.admin-access-copy { flex: 1; min-width: 0; }
+.admin-session-actions { flex-shrink: 0; margin-left: auto; }
+.admin-session-actions:empty { display: none; }
 .admin-access-notice strong { font-size: 14px; }
 .admin-access-notice p { margin: 6px 0 0; font-size: 12px; line-height: 1.7; color: var(--flow-muted); }
 .admin-sidebar nav { display: grid; gap: 4px; }
@@ -274,6 +277,9 @@ input[type='checkbox'] { accent-color: #087b56; width: 18px; height: 18px; }
   .owned-summary { gap: 10px; padding: 17px; }
   .owned-summary>span { width: 100%; margin: 0 0 0 31px; }
   .admin-workspace { width: calc(100% - 24px); padding-top: 20px; }
+  .admin-access-notice { flex-wrap: wrap; align-items: flex-start; }
+  .admin-session-actions { flex-basis: 100%; }
+  .admin-session-actions .btn { width: 100%; }
   .admin-header-label>span, .admin-header-label>svg { display: none; }
   .admin-sidebar { display: block; overflow-x: auto; }
   .admin-sidebar nav { display: flex; }
