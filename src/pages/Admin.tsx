@@ -7,6 +7,7 @@ import ImportCsv from '../components/ImportCsv';
 import DrawCheck from './DrawCheck';
 import AdminParticipants from './AdminParticipants';
 import CreateCampaign from '../components/CreateCampaign';
+import DeleteCampaign from '../components/DeleteCampaign';
 import CreateTickets from '../components/CreateTickets';
 
 const titles: Record<string, string> = {
@@ -33,6 +34,7 @@ export default function AdminBackend() {
   }, [pathname, reload]);
 
   return <><div className="admin-view-title"><h1>{titles[pathname]}</h1><span className="pill amber">ADMINISTRAÇÃO</span></div>
+    {feedback && pathname === '/admin/campanhas' && <p className="lookup-feedback" role="status">{feedback}</p>}
     {loading && <p className="loading-message" role="status"><LoaderCircle className="spin" size={20}/> Consultando o servidor...</p>}
     {error && <div role="alert"><p className="form-error">{error}</p><button className="btn outline" onClick={() => setReload(value => value + 1)}><RefreshCw size={17}/> Tentar novamente</button></div>}
     {!loading && !error && pathname === '/admin' && dashboard && <><div className="admin-metrics">{[
@@ -42,7 +44,7 @@ export default function AdminBackend() {
     {pathname === '/admin/participantes' && <AdminParticipants/>}
     {pathname === '/admin/bilhetes' && <CreateTickets/>}
     {!loading && !error && pathname === '/admin/importacao' && <><label className="creation-api-campaign">Campanha<select aria-label="Campanha da importação" value={campaignId} onChange={event => { setCampaignId(event.target.value); setFeedback(''); }}><option value="">Selecione uma campanha</option>{campaigns.filter(campaign => ['OPEN', 'DRAFT'].includes(campaign.status)).map(campaign => <option key={campaign.id} value={campaign.id}>{campaign.name}</option>)}</select></label>{campaignId ? <ImportCsv key={campaignId} onImport={async rows => { const result = await importApiTickets(campaignId, rows); setFeedback(`${result.created} bilhete(s) importado(s); ${result.rejected} rejeitado(s).`); return result; }}/> : <p className="muted">Cadastre uma campanha no painel para importar bilhetes.</p>}{feedback && <p className="lookup-feedback" role="status">{feedback}</p>}</>}
-    {!loading && !error && pathname === '/admin/campanhas' && <><CreateCampaign onCreated={() => setReload(value => value + 1)}/>{!campaigns.length && <p className="muted">Nenhuma campanha cadastrada no servidor.</p>}{campaigns.map(campaign => <div className="flow-card admin-campaign" key={campaign.id}><CalendarDays size={24}/><h2>{campaign.name}</h2><p>Status: {campaign.status} · {campaign._count.tickets} bilhete(s)</p><p>Prêmio: {campaign.prizeCents == null ? 'Não informado' : money(campaign.prizeCents)}</p><p>Valor por bilhete: {money(campaign.ticketPriceCents)}</p><p>Apuração: {campaign.closesAt ? new Date(campaign.closesAt).toLocaleDateString('pt-BR') : 'Data a definir'}</p></div>)}</>}
+    {!loading && !error && pathname === '/admin/campanhas' && <><CreateCampaign onCreated={() => setReload(value => value + 1)}/>{!campaigns.length && <p className="muted">Nenhuma campanha cadastrada no servidor.</p>}{campaigns.map(campaign => <div className="flow-card admin-campaign" key={campaign.id}><CalendarDays size={24}/><h2>{campaign.name}</h2><p>Status: {campaign.status} · {campaign._count.tickets} bilhete(s)</p><p>Prêmio: {campaign.prizeCents == null ? 'Não informado' : money(campaign.prizeCents)}</p><p>Valor por bilhete: {money(campaign.ticketPriceCents)}</p><p>Apuração: {campaign.closesAt ? new Date(campaign.closesAt).toLocaleDateString('pt-BR') : 'Data a definir'}</p><DeleteCampaign campaign={campaign} onDeleted={() => { setCampaigns(items => items.filter(item => item.id !== campaign.id)); setFeedback(`Campanha "${campaign.name}" excluída.`); }}/></div>)}</>}
     {!['/admin', '/admin/bilhetes', '/admin/importacao', '/admin/campanhas', '/admin/conferencia', '/admin/participantes'].includes(pathname) && <div className="empty admin-empty"><div className="empty-icon"><Users size={29}/></div><h2>{titles[pathname]}</h2><p>Esta funcionalidade ainda não está disponível.</p><Link className="btn outline" to="/admin">Voltar à visão geral</Link></div>}
   </>;
 }

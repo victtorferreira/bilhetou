@@ -10,6 +10,7 @@ export interface ApiStockPage { items: { id: string; serial: string; status: str
 const request = <T>(path: string, body?: unknown) => apiRequest<T>(`/admin${path}`, body);
 
 export const listApiCampaigns = () => request<ApiCampaign[]>('/campaigns');
+export const deleteApiCampaign = (id: string) => apiRequest<{ id: string; deleted: boolean }>(`/admin/campaigns/${encodeURIComponent(id)}`, undefined, 'DELETE');
 export const listApiStock = (campaignId: string, page = 1, query = '') => request<ApiStockPage>(`/campaigns/${encodeURIComponent(campaignId)}/tickets?page=${page}&query=${encodeURIComponent(query)}`);
 
 export function createApiTicketService(campaignId: string): TicketCreationService {

@@ -5,13 +5,13 @@ export class ApiError extends Error {
   constructor(message: string, public readonly status: number) { super(message); }
 }
 
-export async function apiRequest<T>(path: string, body?: unknown): Promise<T> {
+export async function apiRequest<T>(path: string, body?: unknown, method?: 'DELETE'): Promise<T> {
   const controller = new AbortController();
   // Allow startup and temporary latency without changing the session cookie flow.
   const timeout = setTimeout(() => controller.abort(), 90000);
   try {
     const response = await fetch(`${apiBase}${path}`, {
-      method: body === undefined ? 'GET' : 'POST', credentials: 'include', cache: 'no-store',
+      method: method ?? (body === undefined ? 'GET' : 'POST'), credentials: 'include', cache: 'no-store',
       ...(body === undefined ? {} : { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }), signal: controller.signal,
     });
     const data = await response.json().catch(() => null);

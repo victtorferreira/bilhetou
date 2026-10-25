@@ -3,4 +3,8 @@
 .pix-qr svg { display: block; width: 100%; height: auto; }
 .pix-charge-id { overflow-wrap: anywhere; }
 .pix-details textarea { display: block; width: 100%; max-width: 100%; padding: 12px; border: 1px solid var(--border, #aaa); border-radius: 8px; margin: 8px 0 16px; font: inherit; color: inherit; background: transparent; resize: vertical; }
+.pix-details textarea { font-size: 16px; -webkit-user-select: text; user-select: text; }
+.pix-copy-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.pix-copy-feedback { font-size: 13px; line-height: 1.6; color: var(--flow-green); margin: 12px 0 0; }
+.pix-copy-feedback:empty { margin: 0; }
 @media (max-width: 760px) { .pix-charge { grid-template-columns: 1fr; } .pix-qr { width: 250px; max-width: 100%; } }

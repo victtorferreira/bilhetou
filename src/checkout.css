@@ -169,6 +169,14 @@ input[type='checkbox'] { accent-color: #087b56; width: 18px; height: 18px; }
 .admin-main>.search { min-width: 0; margin-bottom: 20px; }
 .admin-campaign { box-shadow: none; }
 .admin-campaign p { font-size: 13px; line-height: 1.7; }
+.campaign-delete { margin-top: 20px; }
+.btn.danger-outline { color: #b53131; background: var(--flow-surface); border: 1px solid #b5313150; }
+.btn.danger { color: #fff; background: #b53131; }
+.btn.danger:hover:not(:disabled) { background: #982828; }
+.campaign-delete-confirm { padding: 18px; border: 1px solid #b5313150; border-radius: 12px; background: var(--flow-soft); overflow-wrap: anywhere; }
+.campaign-delete-confirm>strong { font-size: 14px; }
+.campaign-delete-confirm>p { margin: 10px 0 0; color: var(--flow-muted); }
+[data-theme='dark'] .btn.danger-outline { color: #ffa6a6; border-color: #ffa6a650; }
 .ticket-creation { padding: 24px; box-shadow: none; }
 .creation-heading { display: flex; align-items: center; gap: 14px; }
 .creation-heading h2 { margin: 7px 0 0; font-size: 25px; }

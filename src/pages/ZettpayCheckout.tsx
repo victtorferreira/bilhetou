@@ -5,6 +5,7 @@ import { CheckCircle2, Copy, LoaderCircle, RefreshCw } from 'lucide-react';
 import { zettpayCheckout, type ZettpayCheckout as Checkout } from '../services/zettpay';
 import { participantServices } from '../services/session';
 import { money } from '../lib/format';
+import { copyText, selectCopyText } from '../lib/clipboard';
 import './payments.css';
 
 export default function ZettpayCheckout() {
@@ -16,6 +17,10 @@ export default function ZettpayCheckout() {
   const [document, setDocument] = useState('');
   const [error, setError] = useState('');
   const [feedback, setFeedback] = useState('');
+  const [copying, setCopying] = useState(false);
+  const [manualCopy, setManualCopy] = useState(false);
+  const pixCode = useRef<HTMLTextAreaElement>(null);
+  const copyLocked = useRef(false);
   const locked = useRef(false);
   const [reload, setReload] = useState(0);
   useEffect(() => {
@@ -62,6 +67,24 @@ export default function ZettpayCheckout() {
     finally { locked.current = false; setBusy(false); }
   }
 
+  async function copyPix() {
+    const field = pixCode.current;
+    const value = checkout?.payment?.qrCode;
+    if (!field || !value || copyLocked.current) return;
+    copyLocked.current = true;
+    setCopying(true);
+    setFeedback('');
+    try {
+      const copied = await copyText(value, field);
+      setManualCopy(!copied);
+      setFeedback(copied ? 'Código Pix copiado.' : 'A cópia automática foi bloqueada. Toque e segure no código selecionado e escolha “Copiar”.');
+      if (!copied) field.scrollIntoView({ block: 'nearest' });
+    } finally {
+      copyLocked.current = false;
+      setCopying(false);
+    }
+  }
+
   return <section aria-busy={loading || busy}>
     <div className="flow-heading"><span className="eyebrow">PAGAMENTO PIX</span><h1>{paid ? 'Pagamento confirmado!' : 'Pague seu pedido com Pix'}</h1><p>{paid ? 'Seu pagamento foi confirmado e os bilhetes estão disponíveis na sua área.' : 'Confira o valor e gere o código para concluir o pagamento.'}</p></div>
     {loading && <p role="status"><LoaderCircle size={18} className="spin"/> Carregando pedido...</p>}
@@ -78,13 +101,12 @@ export default function ZettpayCheckout() {
       </form>}
       {!paid && checkout.payment && <div className="flow-card pix-charge">
         {checkout.payment.qrCode && <div className="pix-qr"><QRCodeSVG value={checkout.payment.qrCode} size={220} marginSize={4} title="QR Code Pix do pedido"/></div>}
-        <div className="pix-details"><h2>Aguardando confirmação</h2>{checkout.payment.qrCode ? <><p>Escaneie o QR Code no aplicativo do seu banco ou use o Pix Copia e Cola. Confira o valor e o recebedor antes de pagar.</p><label htmlFor="order-pix-code">Pix Copia e Cola</label><textarea id="order-pix-code" readOnly rows={4} value={checkout.payment.qrCode}/><button className="btn outline" onClick={async () => { try { await navigator.clipboard.writeText(checkout.payment!.qrCode!); setFeedback('Código Pix copiado.'); } catch { setFeedback('Selecione o código para copiar manualmente.'); } }}><Copy size={18}/> Copiar código Pix</button></> : <p>A cobrança está sendo conferida. Consulte novamente; não faça outro pedido para repetir o pagamento.</p>}
+        <div className="pix-details"><h2>Aguardando confirmação</h2>{checkout.payment.qrCode ? <><p>Escaneie o QR Code no aplicativo do seu banco ou use o Pix Copia e Cola. Confira o valor e o recebedor antes de pagar.</p><label htmlFor="order-pix-code">Pix Copia e Cola</label><textarea ref={pixCode} id="order-pix-code" readOnly spellCheck={false} autoCapitalize="off" aria-describedby="pix-copy-feedback" rows={4} value={checkout.payment.qrCode}/><div className="pix-copy-actions"><button type="button" className="btn outline" disabled={copying} onClick={copyPix}><Copy size={18}/> {copying ? 'Copiando...' : 'Copiar código Pix'}</button>{manualCopy && <button type="button" className="btn outline" onClick={() => { if (pixCode.current) selectCopyText(pixCode.current); }}>Selecionar código</button>}</div><p id="pix-copy-feedback" className="pix-copy-feedback" role="status">{feedback}</p></> : <p>A cobrança está sendo conferida. Consulte novamente; não faça outro pedido para repetir o pagamento.</p>}
           {checkout.payment.lastError && <p role="status">{checkout.payment.lastError}</p>}<div className="creation-actions"><button className="btn primary" disabled={busy} onClick={check}><RefreshCw size={18}/> Consultar pagamento</button></div><p className="muted">A confirmação é verificada automaticamente enquanto esta página estiver aberta. O comprovante enviado pelo cliente não substitui a confirmação do pagamento.</p>
         </div>
       </div>}
       {paid && <div className="flow-card"><CheckCircle2 size={32}/><p role="status">Pagamento confirmado pela Zettpay.</p><Link className="btn primary" to="/meus-bilhetes">Ver meus bilhetes</Link></div>}
     </>}
-    {feedback && <p role="status">{feedback}</p>}
     <div className="creation-actions"><Link className="btn outline" to="/meus-bilhetes">Voltar à minha área</Link></div>
   </section>;
 }
