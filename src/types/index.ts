@@ -26,7 +26,9 @@ export interface Order {
   createdAt: string;
   idempotencyKey: string;
   status: 'registered';
-  paymentStatus: 'UNPAID';
+  paymentStatus: 'UNPAID' | 'PAID';
+  paymentRequired?: boolean;
+  quantity?: number;
 }
 
 export interface CampaignInfo {

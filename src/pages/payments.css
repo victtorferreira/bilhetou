@@ -1,0 +1,6 @@
+.pix-charge { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; margin-top: 24px; }
+.pix-qr { background: #fff; padding: 15px; border-radius: 12px; align-self: start; }
+.pix-qr svg { display: block; width: 100%; height: auto; }
+.pix-charge-id { overflow-wrap: anywhere; }
+.pix-details textarea { display: block; width: 100%; max-width: 100%; padding: 12px; border: 1px solid var(--border, #aaa); border-radius: 8px; margin: 8px 0 16px; font: inherit; color: inherit; background: transparent; resize: vertical; }
+@media (max-width: 760px) { .pix-charge { grid-template-columns: 1fr; } .pix-qr { width: 250px; max-width: 100%; } }

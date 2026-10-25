@@ -18,8 +18,8 @@ export default function ConfirmOrder() {
     setBusy(true);
     setError('');
     try {
-      await ordersService.confirm({ participantId: participant.id, ticketIds: selectedIds, idempotencyKey: selectionKey });
-      navigate('/confirmacao', { replace: true });
+      const order = await ordersService.confirm({ participantId: participant.id, ticketIds: selectedIds, idempotencyKey: selectionKey });
+      navigate(order.paymentRequired && order.paymentStatus !== 'PAID' ? `/pagamento/${order.id}` : '/confirmacao', { replace: true });
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Não foi possível confirmar. Tente novamente.');
       locked.current = false;
