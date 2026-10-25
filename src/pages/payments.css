@@ -1,3 +1,6 @@
+.payer-form { margin-top: 24px; }
+.payer-form .creation-fields input { font-size: 16px; font-weight: 400; }
+.payer-document-help { margin: 12px 0 20px; font-size: 12px; line-height: 1.6; color: var(--flow-muted); }
 .pix-charge { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; margin-top: 24px; }
 .pix-qr { background: #fff; padding: 15px; border-radius: 12px; align-self: start; }
 .pix-qr svg { display: block; width: 100%; height: auto; }

@@ -4,7 +4,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { CheckCircle2, Copy, LoaderCircle, RefreshCw } from 'lucide-react';
 import { zettpayCheckout, type ZettpayCheckout as Checkout } from '../services/zettpay';
 import { participantServices } from '../services/session';
-import { money } from '../lib/format';
+import { maskPayerDocument, money } from '../lib/format';
 import { copyText, selectCopyText } from '../lib/clipboard';
 import './payments.css';
 
@@ -55,7 +55,7 @@ export default function ZettpayCheckout() {
     event.preventDefault();
     if (locked.current) return;
     locked.current = true; setBusy(true); setError('');
-    try { setCheckout(await zettpayCheckout.create(orderId, email, document)); setDocument(''); }
+    try { setCheckout(await zettpayCheckout.create(orderId, email.trim(), document.replace(/\D/g, ''))); setDocument(''); }
     catch (error) { setError(error instanceof Error ? error.message : 'Não foi possível gerar o Pix. Consulte o pedido antes de repetir.'); }
     finally { locked.current = false; setBusy(false); }
   }
@@ -93,10 +93,13 @@ export default function ZettpayCheckout() {
     {checkout && <>
       <div className="flow-card"><p className="pix-charge-id">Pedido: {checkout.order.id}</p><h2>{money(checkout.order.totalCents)}</h2><p>{checkout.order.quantity} bilhete(s)</p></div>
       {!checkout.order.paymentRequired && !paid && <p>Este pedido foi registrado antes da ativação do pagamento Pix.</p>}
-      {!paid && !checkout.payment && checkout.order.paymentRequired && <form className="flow-card" onSubmit={create}>
+      {!paid && !checkout.payment && checkout.order.paymentRequired && <form className="flow-card payer-form" onSubmit={create}>
         <h2>Dados do pagador</h2><p>Os dados abaixo serão enviados à Zettpay para gerar a cobrança.</p>
-        <label>E-mail do pagador<input type="email" autoComplete="email" required maxLength={254} value={email} onChange={event => setEmail(event.target.value)}/></label>
-        <label>CPF ou CNPJ do pagador<input inputMode="numeric" required maxLength={30} value={document} onChange={event => setDocument(event.target.value)}/></label>
+        <div className="creation-fields">
+          <label htmlFor="payer-email">E-mail do pagador<input id="payer-email" name="payerEmail" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} enterKeyHint="next" placeholder="seuemail@exemplo.com" required maxLength={254} disabled={busy} value={email} onChange={event => setEmail(event.target.value)}/></label>
+          <label htmlFor="payer-document">CPF ou CNPJ do pagador<input id="payer-document" name="payerDocument" type="text" inputMode="numeric" autoComplete="off" enterKeyHint="done" aria-describedby="payer-document-help" placeholder="000.000.000-00" required maxLength={18} disabled={busy} value={document} onChange={event => setDocument(maskPayerDocument(event.target.value))}/></label>
+        </div>
+        <p id="payer-document-help" className="payer-document-help">Digite os 11 dígitos do CPF ou os 14 do CNPJ.</p>
         <button className="btn primary wide" disabled={busy} type="submit">{busy ? 'Gerando Pix...' : 'Gerar Pix para pagamento'}</button>
       </form>}
       {!paid && checkout.payment && <div className="flow-card pix-charge">
