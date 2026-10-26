@@ -10,6 +10,7 @@ import ConfirmOrder from './pages/ConfirmOrder';
 import Confirmation from './pages/Confirmation';
 import MyTickets from './pages/MyTickets';
 import Results from './pages/Results';
+import VerifyTicket from './pages/VerifyTicket';
 
 const AdminLayout = lazy(() => import('./components/AdminLayout'));
 const Admin = lazy(() => import('./pages/Admin'));
@@ -23,14 +24,15 @@ const titles: Record<string, string> = {
 function RouteEffects() {
   const { pathname } = useLocation();
   useEffect(() => {
-    document.title = `${pathname.startsWith('/admin') ? 'Administração' : titles[pathname] ?? 'Página não encontrada'} | Bilhetou`;
+    document.title = `${pathname.startsWith('/conferir/') ? 'Conferir bilhete' : pathname.startsWith('/admin') ? 'Administração' : titles[pathname] ?? 'Página não encontrada'} | Bilhetou`;
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [pathname]);
   return null;
 }
 
 export default function App() {
-  return <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><a className="skip-link" href="#main-content">Pular para o conteúdo</a><RouteEffects/><Suspense fallback={<div className="route-loading" role="status"><LoaderCircle className="spin"/> Carregando...</div>}><Routes>
+  return <BrowserRouter><a className="skip-link" href="#main-content">Pular para o conteúdo</a><RouteEffects/><Suspense fallback={<div className="route-loading" role="status"><LoaderCircle className="spin"/> Carregando...</div>}><Routes>
+    <Route path="conferir/:id" element={<VerifyTicket/>}/>
     <Route element={<PublicLayout/>}>
       <Route index element={<Register/>}/>
       <Route element={<RequireParticipant/>}>

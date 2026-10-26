@@ -113,7 +113,7 @@ input[type='checkbox'] { accent-color: #087b56; width: 18px; height: 18px; }
 .ticket-select { padding: 0 16px 16px; }
 .ticket-select .btn { min-height: 44px; font-size: 12px; }
 .ticket-validation { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-top: 1px solid var(--flow-border); }
-.ticket-validation svg { background: #fff; border-radius: 8px; flex: 0 0 88px; }
+.ticket-validation svg { background: #fff; border-radius: 8px; flex: 0 0 112px; }
 .ticket-validation strong { font-size: 11px; }
 .ticket-validation p, .ticket-validation small { font-size: 10px; line-height: 1.6; color: var(--flow-muted); margin: 4px 0 0; }
 .copy-feedback { margin: 0 20px 12px; font-size: 11px; color: var(--flow-green); }

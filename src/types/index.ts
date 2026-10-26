@@ -26,7 +26,8 @@ export interface Order {
   createdAt: string;
   idempotencyKey: string;
   status: 'registered';
-  paymentStatus: 'UNPAID' | 'PAID';
+  paymentStatus: 'UNPAID' | 'PAID' | 'EXPIRED' | 'REVIEW_REQUIRED';
+  reservationExpiresAt?: string | null;
   paymentRequired?: boolean;
   quantity?: number;
 }

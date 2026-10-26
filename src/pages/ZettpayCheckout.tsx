@@ -23,6 +23,14 @@ export default function ZettpayCheckout() {
   const copyLocked = useRef(false);
   const locked = useRef(false);
   const [reload, setReload] = useState(0);
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    if (!checkout?.order.reservationExpiresAt) return;
+    const delay = new Date(checkout.order.reservationExpiresAt).getTime() - Date.now();
+    if (!Number.isFinite(delay)) return;
+    const timer = setTimeout(() => setNow(Date.now()), Math.max(0, delay) + 5);
+    return () => clearTimeout(timer);
+  }, [checkout?.order.reservationExpiresAt]);
   useEffect(() => {
     let active = true;
     setLoading(true); setCheckout(null); setError('');
@@ -33,7 +41,9 @@ export default function ZettpayCheckout() {
   }, [orderId, reload]);
 
   const paid = checkout?.order.paymentStatus === 'PAID';
-  const pending = !!checkout?.payment && !paid;
+  const review = checkout?.order.paymentStatus === 'REVIEW_REQUIRED';
+  const expired = !!checkout?.order.reservationExpired || checkout?.order.paymentStatus === 'EXPIRED' || (!paid && !!checkout?.order.reservationExpiresAt && new Date(checkout.order.reservationExpiresAt).getTime() <= now);
+  const pending = !!checkout?.payment && !paid && !review && !expired;
   useEffect(() => {
     if (!pending) return;
     let active = true;
@@ -86,14 +96,16 @@ export default function ZettpayCheckout() {
   }
 
   return <section aria-busy={loading || busy}>
-    <div className="flow-heading"><span className="eyebrow">PAGAMENTO PIX</span><h1>{paid ? 'Pagamento confirmado!' : 'Pague seu pedido com Pix'}</h1><p>{paid ? 'Seu pagamento foi confirmado e os bilhetes estão disponíveis na sua área.' : 'Confira o valor e gere o código para concluir o pagamento.'}</p></div>
+    <div className="flow-heading"><span className="eyebrow">PAGAMENTO PIX</span><h1>{paid ? 'Pagamento confirmado!' : review ? 'Pagamento em conferência' : expired ? 'Reserva expirada' : 'Pague seu pedido com Pix'}</h1><p>{paid ? 'Seu pagamento foi confirmado e os bilhetes estão disponíveis na sua área.' : review || expired ? 'Consulte abaixo a situação do seu pedido.' : 'Confira o valor e gere o código para concluir o pagamento.'}</p></div>
     {loading && <p role="status"><LoaderCircle size={18} className="spin"/> Carregando pedido...</p>}
     {error && <p className="form-error" role="alert">{error}</p>}
     {!loading && !checkout && <button className="btn outline" onClick={() => setReload(value => value + 1)}>Carregar pedido novamente</button>}
     {checkout && <>
-      <div className="flow-card"><p className="pix-charge-id">Pedido: {checkout.order.id}</p><h2>{money(checkout.order.totalCents)}</h2><p>{checkout.order.quantity} bilhete(s)</p></div>
+      <div className="flow-card"><p className="pix-charge-id">Pedido: {checkout.order.id}</p><h2>{money(checkout.order.totalCents)}</h2><p>{checkout.order.quantity} bilhete(s)</p>{!paid && !review && !expired && checkout.order.reservationExpiresAt && <p>Reserva válida até {new Date(checkout.order.reservationExpiresAt).toLocaleString('pt-BR')}.</p>}</div>
       {!checkout.order.paymentRequired && !paid && <p>Este pedido foi registrado antes da ativação do pagamento Pix.</p>}
-      {!paid && !checkout.payment && checkout.order.paymentRequired && <form className="flow-card payer-form" onSubmit={create}>
+      {review && <p role="alert">Pagamento recebido após o prazo da reserva. Seus bilhetes não foram liberados. Contate o suporte com o número do pedido para conferência e reembolso.</p>}
+      {expired && !review && !paid && <p role="alert">A reserva expirou e os bilhetes voltaram ao estoque. Não pague o código antigo. Se já pagou, consulte o pagamento ou contate o suporte.</p>}
+      {!paid && !expired && !review && !checkout.payment && checkout.order.paymentRequired && <form className="flow-card payer-form" onSubmit={create}>
         <h2>Dados do pagador</h2><p>Os dados abaixo serão enviados à Zettpay para gerar a cobrança.</p>
         <div className="creation-fields">
           <label htmlFor="payer-email">E-mail do pagador<input id="payer-email" name="payerEmail" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} enterKeyHint="next" placeholder="seuemail@exemplo.com" required maxLength={254} disabled={busy} value={email} onChange={event => setEmail(event.target.value)}/></label>
@@ -102,9 +114,9 @@ export default function ZettpayCheckout() {
         <p id="payer-document-help" className="payer-document-help">Digite os 11 dígitos do CPF ou os 14 do CNPJ.</p>
         <button className="btn primary wide" disabled={busy} type="submit">{busy ? 'Gerando Pix...' : 'Gerar Pix para pagamento'}</button>
       </form>}
-      {!paid && checkout.payment && <div className="flow-card pix-charge">
-        {checkout.payment.qrCode && <div className="pix-qr"><QRCodeSVG value={checkout.payment.qrCode} size={220} marginSize={4} title="QR Code Pix do pedido"/></div>}
-        <div className="pix-details"><h2>Aguardando confirmação</h2>{checkout.payment.qrCode ? <><p>Escaneie o QR Code no aplicativo do seu banco ou use o Pix Copia e Cola. Confira o valor e o recebedor antes de pagar.</p><label htmlFor="order-pix-code">Pix Copia e Cola</label><textarea ref={pixCode} id="order-pix-code" readOnly spellCheck={false} autoCapitalize="off" aria-describedby="pix-copy-feedback" rows={4} value={checkout.payment.qrCode}/><div className="pix-copy-actions"><button type="button" className="btn outline" disabled={copying} onClick={copyPix}><Copy size={18}/> {copying ? 'Copiando...' : 'Copiar código Pix'}</button>{manualCopy && <button type="button" className="btn outline" onClick={() => { if (pixCode.current) selectCopyText(pixCode.current); }}>Selecionar código</button>}</div><p id="pix-copy-feedback" className="pix-copy-feedback" role="status">{feedback}</p></> : <p>A cobrança está sendo conferida. Consulte novamente; não faça outro pedido para repetir o pagamento.</p>}
+      {!paid && !review && checkout.payment && <div className="flow-card pix-charge">
+        {!expired && checkout.payment.qrCode && <div className="pix-qr"><QRCodeSVG value={checkout.payment.qrCode} size={220} marginSize={4} title="QR Code Pix do pedido"/></div>}
+        <div className="pix-details"><h2>Aguardando confirmação</h2>{!expired && checkout.payment.qrCode ? <><p>Escaneie o QR Code no aplicativo do seu banco ou use o Pix Copia e Cola. Confira o valor e o recebedor antes de pagar.</p><label htmlFor="order-pix-code">Pix Copia e Cola</label><textarea ref={pixCode} id="order-pix-code" readOnly spellCheck={false} autoCapitalize="off" aria-describedby="pix-copy-feedback" rows={4} value={checkout.payment.qrCode}/><div className="pix-copy-actions"><button type="button" className="btn outline" disabled={copying} onClick={copyPix}><Copy size={18}/> {copying ? 'Copiando...' : 'Copiar código Pix'}</button>{manualCopy && <button type="button" className="btn outline" onClick={() => { if (pixCode.current) selectCopyText(pixCode.current); }}>Selecionar código</button>}</div><p id="pix-copy-feedback" className="pix-copy-feedback" role="status">{feedback}</p></> : <p>A cobrança está sendo conferida. Consulte novamente; não faça outro pedido para repetir o pagamento.</p>}
           {checkout.payment.lastError && <p role="status">{checkout.payment.lastError}</p>}<div className="creation-actions"><button className="btn primary" disabled={busy} onClick={check}><RefreshCw size={18}/> Consultar pagamento</button></div><p className="muted">A confirmação é verificada automaticamente enquanto esta página estiver aberta. O comprovante enviado pelo cliente não substitui a confirmação do pagamento.</p>
         </div>
       </div>}

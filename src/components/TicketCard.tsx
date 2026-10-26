@@ -13,8 +13,8 @@ interface Props {
 
 export default function TicketCard({ ticket, selected = false, onToggle, assigned = false, issuedAt }: Props) {
   const [copyStatus, setCopyStatus] = useState('');
-  // The QR contains a ticket reference only. Never put participant, phone or authentication data here.
-  const qrValue = `bilhetou:ticket:v1:${ticket.campaignId}:${ticket.serial}`;
+  // Public random reference only; no buyer data or session credentials.
+  const qrValue = new URL(`/conferir/${ticket.id}`, window.location.origin).href;
   async function copySerial() {
     try { await navigator.clipboard.writeText(ticket.serial); setCopyStatus('Copiado!'); }
     catch { setCopyStatus('Não foi possível copiar. Use o serial exibido.'); }
@@ -29,7 +29,7 @@ export default function TicketCard({ ticket, selected = false, onToggle, assigne
       {assigned && <button type="button" aria-label={`Copiar serial ${ticket.serial}`} onClick={copySerial}><Copy size={17}/></button>}
     </div>
     {copyStatus && <p className="copy-feedback" role="status">{copyStatus}</p>}
-    {assigned && <div className="ticket-validation"><QRCodeSVG value={qrValue} size={88} level="M" marginSize={2} title={`QR Code do bilhete ${ticket.serial}`}/><div><strong>Referência do bilhete</strong><p>{ticket.campaignName}</p>{issuedAt && <p>Emitido em {new Date(issuedAt).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}</p>}<small>Consulte o status do pedido na sua área.</small></div></div>}
+    {assigned && <div className="ticket-validation"><QRCodeSVG value={qrValue} size={112} level="M" marginSize={4} title={`QR Code do bilhete ${ticket.serial}`}/><div><strong>Conferência do bilhete</strong><p>{ticket.campaignName}</p>{issuedAt && <p>Emitido em {new Date(issuedAt).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}</p>}<small>Escaneie para conferir os números e a validade.</small><p><a href={qrValue}>Conferir bilhete</a></p></div></div>}
     {onToggle && <div className="ticket-select"><button className={`btn wide ${selected ? 'outline' : 'primary'}`} type="button" aria-pressed={selected} aria-label={`${selected ? 'Remover' : 'Selecionar'} ${ticket.serial}`} onClick={onToggle}>{selected ? <Check size={17}/> : <Plus size={17}/>} {selected ? 'Remover seleção' : 'Selecionar'}</button></div>}
   </article>;
 }

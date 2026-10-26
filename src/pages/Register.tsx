@@ -11,7 +11,6 @@ export default function Register() {
   const [phone, setPhone] = useState(maskPhone(participant?.phone ?? ''));
   const [errors, setErrors] = useState<{ name?: string; phone?: string; form?: string }>({});
   const [busy, setBusy] = useState(false);
-  const [whatsappConsent, setWhatsappConsent] = useState(false);
   const navigate = useNavigate();
   useEffect(() => { if (participant) { setName(participant.name); setPhone(maskPhone(participant.phone)); } }, [participant?.id]);
 
@@ -27,7 +26,7 @@ export default function Register() {
     setErrors(validation);
     if (validation.name || validation.phone) return;
     setBusy(true);
-    try { await participantServices.participants.register(normalized, phone, whatsappConsent); navigate('/bilhetes'); }
+    try { await participantServices.participants.register(normalized, phone); navigate('/bilhetes'); }
     catch (error) { setErrors({ form: error instanceof Error ? error.message : 'Não foi possível continuar. Tente novamente.' }); }
     finally { setBusy(false); }
   }
@@ -39,7 +38,6 @@ export default function Register() {
         {errors.name && <p id="name-error" className="input-error" role="alert">{errors.name}</p>}
         <label htmlFor="whatsapp">WhatsApp</label><div className={`field ${errors.phone ? 'invalid-field' : ''}`}><MessageCircle size={19}/><input id="whatsapp" name="tel" type="tel" required autoComplete="tel-national" inputMode="tel" value={phone} onChange={event => { setPhone(maskPhone(event.target.value)); setErrors(current => ({ ...current, phone: undefined })); }} placeholder="(98) 99999-9999" aria-invalid={!!errors.phone} aria-describedby={errors.phone ? 'phone-error' : undefined}/></div>
         {errors.phone && <p id="phone-error" className="input-error" role="alert">{errors.phone}</p>}
-        <label className="whatsapp-consent"><input type="checkbox" checked={whatsappConsent} onChange={event => setWhatsappConsent(event.target.checked)}/><span>Quero receber a confirmação do meu cadastro pelo WhatsApp do Bilhetou.</span></label>
         {errors.form && <p className="form-error" role="alert">{errors.form}</p>}
         {participant && <p className="session-hint">Você pode continuar com seu cadastro atual. Alterar os dados cria outro cadastro.</p>}
         <button className="btn primary wide register-submit" type="submit" disabled={busy}>{busy ? <><LoaderCircle className="spin" size={18}/> Continuando...</> : <>CONTINUAR <ArrowRight size={19}/></>}</button>

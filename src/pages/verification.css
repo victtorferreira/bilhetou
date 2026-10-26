@@ -1,0 +1,11 @@
+.verification-page { max-width: 680px; }
+.verification-result { margin-bottom: 1.5rem; }
+.verification-result > p { margin: 1rem 0; }
+.verification-status { display: flex; align-items: center; gap: .75rem; color: var(--warning, #ac7020); }
+.verification-status.is-valid { color: var(--primary, #168b62); }
+.verification-status h2 { margin: 0; }
+.verification-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.verification-details dt { font-size: .85rem; opacity: .75; }
+.verification-details dd { margin: .3rem 0 0; font-weight: 700; overflow-wrap: anywhere; }
+.verification-notice { margin-top: 1.5rem; font-size: .875rem; line-height: 1.6; opacity: .8; }
+@media (max-width: 420px) { .verification-details { grid-template-columns: 1fr; } }
