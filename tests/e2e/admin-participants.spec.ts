@@ -112,3 +112,30 @@ test('ended campaign retains counts and clearly reports that no campaign is acti
   await expect(page.getByText(`Sem campanha ativa. Exibindo a última campanha: ${campaign.name}.`, { exact: true })).toBeVisible();
   await expect(page.locator('.admin-table tbody tr').first().locator('td').nth(4)).toHaveText('1');
 });
+
+test('grouped registrations show one row, summed activity and a combined history', async ({ page }) => {
+  await participantRoutes(page);
+  await page.route('**/api/admin/participants?*', route => route.fulfill({ json: {
+    campaignScope: { mode: 'current', active: true, campaign },
+    items: [{ ...people[0], registrations: 3, orders: 2, tickets: 5 }],
+    total: 1, page: 1, totalPages: 1, summary: { participants: 1, orders: 2, tickets: 5 },
+  } }));
+  await page.route(`**/api/admin/participants/${id}`, route => route.fulfill({ json: {
+    ...people[0], phone: '98999999999', verification: 'unverified', registrations: 3,
+    summary: { orders: 3, tickets: 11, orderValueCents: 3300 },
+  } }));
+  await page.goto('/admin/participantes');
+  await expect(page.locator('.admin-table tbody tr')).toHaveCount(1);
+  await expect(page.getByText('3 cadastros agrupados', { exact: true })).toBeVisible();
+  await expect(page.locator('.admin-table tbody tr td').nth(3)).toHaveText('2');
+  await expect(page.locator('.admin-table tbody tr td').nth(4)).toHaveText('5');
+  await expect(page.locator('.admin-metrics strong').first()).toHaveText('1');
+  await expect(page.locator('body')).not.toContainText('(98) 99999-9999');
+  await page.getByRole('button', { name: 'Ver detalhes de Maria Silva', exact: true }).click();
+  await expect(page.getByText('Este histórico reúne 3 cadastros com o mesmo nome e WhatsApp.', { exact: true })).toBeVisible();
+  await expect(page.locator('.admin-metrics strong').nth(1)).toHaveText('11');
+  await page.getByRole('button', { name: 'Bilhetes', exact: true }).click();
+  await expect(page.locator('.admin-table')).toContainText('BIL-000001');
+  await page.getByRole('button', { name: 'Voltar aos participantes', exact: true }).click();
+  await expect(page.getByText('3 cadastros agrupados', { exact: true })).toBeVisible();
+});
