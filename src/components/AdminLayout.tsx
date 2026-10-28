@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { CalendarDays, ClipboardList, LayoutDashboard, LockKeyhole, Ticket, TrendingUp, Trophy, Upload, UserRound, Users } from 'lucide-react';
+import { CalendarDays, ClipboardList, LayoutDashboard, LockKeyhole, Ticket, TrendingUp, Trophy, Upload, Users } from 'lucide-react';
 import Logo from './Logo';
 import AdminSession from './AdminSession';
 import ThemeToggle from './ThemeToggle';
@@ -11,7 +11,8 @@ const links = [
   { to: '/admin/bilhetes', label: 'Estoque de bilhetes', Icon: Ticket },
   { to: '/admin/importacao', label: 'Importação CSV', Icon: Upload },
   { to: '/admin/participantes', label: 'Participantes', Icon: Users },
-  { to: '/admin/vendedores', label: 'Vendedores', Icon: UserRound },
+  // Reservado para uso futuro. Ao reativar, importe UserRound de lucide-react.
+  // { to: '/admin/vendedores', label: 'Vendedores', Icon: UserRound },
   { to: '/admin/apuracoes', label: 'Apurações', Icon: Trophy },
   { to: '/admin/relatorios', label: 'Relatórios', Icon: TrendingUp },
 ];
