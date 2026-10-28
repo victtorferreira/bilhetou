@@ -1,5 +1,5 @@
 import type { TicketEntry } from '../types';
-export const maxBatchSize = 1000;
+export const maxBatchSize = 2500;
 export interface CreateTicketsInput { quantity: number; prefix: string; uniqueNumbers: boolean }
 export interface TicketBatchDraft {
   tickets: TicketEntry[];
