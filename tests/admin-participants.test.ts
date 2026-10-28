@@ -15,6 +15,12 @@ test('participant adapters preserve filters, pagination and authenticated cookie
     assert.equal(calls[1].url.pathname, '/api/admin/participants/person');
     assert.equal(calls[2].url.pathname + calls[2].url.search, '/api/admin/participants/person/orders?page=3');
     assert.equal(calls[3].url.pathname + calls[3].url.search, '/api/admin/participants/person/tickets?page=4');
+    await listAdminParticipants({ page: 1, query: '', activity: 'all', campaignId: '' });
+    assert.equal(calls[4].url.searchParams.get('campaignScope'), 'current');
+    assert.equal(calls[4].url.searchParams.has('campaignId'), false);
+    await listAdminParticipants({ page: 1, query: '', activity: 'all', campaignId: 'all' });
+    assert.equal(calls[5].url.searchParams.get('campaignScope'), 'all');
+    assert.equal(calls[5].url.searchParams.has('campaignId'), false);
     assert.ok(calls.every(call => call.credentials === 'include'));
   } finally { globalThis.fetch = previous; }
 });
